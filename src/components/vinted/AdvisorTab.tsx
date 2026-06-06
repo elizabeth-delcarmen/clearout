@@ -47,7 +47,7 @@ export function AdvisorTab() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-150px)]">
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto safe-x py-4 min-w-0">
         <div className="rounded-[12px] bg-primary/10 p-3.5 mb-4">
           <div className="text-[13px] font-bold text-primary font-sans-ui">🤖 AI Advisor</div>
           <div className="text-[12px] text-muted-foreground font-sans-ui leading-relaxed mt-1">
@@ -94,7 +94,7 @@ export function AdvisorTab() {
         )}
       </div>
 
-      <div className="sticky bottom-0 bg-background pt-2 px-4 pb-4 flex gap-2 border-t border-border">
+      <div className="sticky bottom-0 bg-background pt-2 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pb-[calc(1rem+env(safe-area-inset-bottom))] flex gap-2 border-t border-border">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}

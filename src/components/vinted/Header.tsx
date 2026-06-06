@@ -2,7 +2,7 @@ type Props = { needsDataCount: number };
 
 export function Header({ needsDataCount }: Props) {
   return (
-    <div className="sticky top-0 z-10 bg-primary px-5 pt-6 pb-5">
+    <div className="sticky top-0 z-10 bg-primary pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] pt-[calc(1.5rem+env(safe-area-inset-top))] pb-5">
       <div className="text-[11px] font-bold uppercase tracking-[2px] text-white/70 font-sans-ui">
         CLEAROUT
       </div>

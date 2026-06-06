@@ -70,7 +70,7 @@ export function LogTab({ onSaved }: Props) {
         : "bg-[#ccc] text-white cursor-not-allowed";
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="safe-x safe-b py-4 space-y-4">
       <div>
         <label className={labelCls}>Item name</label>
         <input
