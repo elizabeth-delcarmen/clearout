@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Listing } from "@/hooks/useListings";
 import { useListings } from "@/hooks/useListings";
+import { isReadyFor24hNudge } from "@/lib/listings";
 import { CATEGORIES, CONDITIONS } from "@/lib/listingOptions";
 
 type Props = { listing: Listing };
@@ -15,6 +16,7 @@ export function EntryCard({ listing }: Props) {
   const [editing, setEditing] = useState(false);
 
   const missingData = !listing.views && !listing.sold;
+  const readyFor24hNudge = isReadyFor24hNudge(listing);
   const isRelist = listing.type === "Relist";
 
   const borderClass = missingData ? "border-warn/40" : "border-border";
@@ -47,6 +49,11 @@ export function EntryCard({ listing }: Props) {
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
+          {readyFor24hNudge && (
+            <span className="text-warn text-[10px] leading-none" aria-label="Ready for 24h data">
+              ●
+            </span>
+          )}
           <Badge color={isRelist ? "warn" : "primary"}>{isRelist ? "Relist" : "New"}</Badge>
           {listing.sold && <Badge color="success">Sold ✓</Badge>}
           {missingData && <Badge color="warn">Log 24h data</Badge>}
@@ -54,7 +61,15 @@ export function EntryCard({ listing }: Props) {
       </button>
 
       {expanded && (
-        <div className="px-4 pb-4 border-t border-border">
+        <div className="border-t border-border">
+          {readyFor24hNudge && (
+            <div className="px-4 pt-3">
+              <div className="rounded-[10px] bg-warn/10 px-3 py-2.5 text-[12px] font-semibold text-warn font-sans-ui">
+                ⏱ Ready for 24h data — add your views, favourites and messages
+              </div>
+            </div>
+          )}
+          <div className="px-4 pb-4">
           {editing ? (
             <EditForm
               listing={listing}
@@ -72,6 +87,7 @@ export function EntryCard({ listing }: Props) {
               onSave24={async (patch) => update(listing.id, patch)}
             />
           )}
+          </div>
         </div>
       )}
     </div>

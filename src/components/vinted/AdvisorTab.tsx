@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useListings } from "@/hooks/useListings";
+import { runAdvisor } from "@/lib/advisorHandler";
 import { toast } from "sonner";
 
-type Msg = { role: "user" | "assistant"; content: string };
+type Msg = { role: "user" | "assistant"; content: string; error?: boolean };
 
 const SUGGESTIONS = [
   "Should I relist anything tonight?",
@@ -30,16 +30,18 @@ export function AdvisorTab() {
     setInput("");
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("advisor", {
-        body: { messages: next, listings },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      setMessages([...next, { role: "assistant", content: data.reply }]);
+      const { status, body } = await runAdvisor(
+        { messages: next, listings },
+        import.meta.env.VITE_ANTHROPIC_API_KEY,
+      );
+      if (status !== 200 || "error" in body) {
+        throw new Error("error" in body ? body.error : `Request failed (${status})`);
+      }
+      setMessages([...next, { role: "assistant", content: body.reply }]);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Something went wrong";
       toast.error(msg);
-      setMessages([...next, { role: "assistant", content: "Sorry — I hit an error. Please try again." }]);
+      setMessages([...next, { role: "assistant", content: msg, error: true }]);
     } finally {
       setLoading(false);
     }
@@ -78,7 +80,9 @@ export function AdvisorTab() {
                 className={`max-w-[85%] px-3.5 py-2.5 font-sans-ui text-[14px] leading-relaxed whitespace-pre-wrap ${
                   m.role === "user"
                     ? "self-end bg-primary text-primary-foreground rounded-[14px_14px_4px_14px]"
-                    : "self-start bg-card border-[1.5px] border-border rounded-[14px_14px_14px_4px]"
+                    : m.error
+                      ? "self-start bg-destructive/10 border-[1.5px] border-destructive/40 text-destructive rounded-[14px_14px_14px_4px]"
+                      : "self-start bg-card border-[1.5px] border-border rounded-[14px_14px_14px_4px]"
                 }`}
               >
                 {m.content}
