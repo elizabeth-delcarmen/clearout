@@ -10,9 +10,9 @@ const nowStr = () => {
   return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 };
 
-const labelCls = "block text-[11px] font-bold uppercase tracking-[1px] text-muted-foreground mb-1.5 font-sans-ui";
+const labelCls = "block text-label uppercase tracking-[1px] text-muted-foreground mb-1.5 font-sans-ui";
 const inputCls =
-  "w-full rounded-[10px] border-[1.5px] border-border bg-background px-3 py-2.5 text-[15px] font-sans-ui focus:border-primary focus:outline-none";
+  "w-full rounded-[10px] border-[1.5px] border-border bg-background px-3 py-2.5 text-sm font-sans-ui focus:border-primary";
 
 export function LogTab({ onSaved }: Props) {
   const { add } = useListings();
@@ -67,7 +67,7 @@ export function LogTab({ onSaved }: Props) {
       ? "bg-success text-success-foreground"
       : ready
         ? "bg-primary text-primary-foreground"
-        : "bg-[#ccc] text-white cursor-not-allowed";
+        : "bg-muted text-muted-foreground cursor-not-allowed";
 
   return (
     <div className="safe-x safe-b py-4 space-y-4">
@@ -148,8 +148,8 @@ export function LogTab({ onSaved }: Props) {
         {state === "saved" ? "✓ Saved!" : state === "saving" ? "Saving…" : "Save listing"}
       </button>
       <div className="rounded-[12px] bg-primary/10 p-3.5">
-        <div className="text-[12px] font-bold text-primary font-sans-ui">⏱ Remember</div>
-        <div className="text-[12px] text-muted-foreground font-sans-ui leading-relaxed mt-1">
+        <div className="text-sm font-bold text-primary font-sans-ui">⏱ Remember</div>
+        <div className="text-sm text-muted-foreground font-sans-ui leading-relaxed mt-1">
           Come back after 24hrs to log views, favourites and messages in the Entries tab.
         </div>
       </div>

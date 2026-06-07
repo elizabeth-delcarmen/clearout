@@ -93,6 +93,25 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      fontSize: {
+        // Mobile-friendly scale — nothing below 14px in the UI
+        // Use 'xs' for labels only (never body copy)
+        'xs':      ['0.875rem',  { lineHeight: '1.4' }],  // 14px — labels, badges
+        'sm':      ['0.9375rem', { lineHeight: '1.4' }],  // 15px — secondary text
+        'base':    ['1rem',      { lineHeight: '1.5' }],  // 16px — body copy minimum
+        'lg':      ['1.125rem',  { lineHeight: '1.4' }],  // 18px — card headings
+        'xl':      ['1.25rem',   { lineHeight: '1.3' }],  // 20px — screen titles
+        '2xl':     ['1.5rem',    { lineHeight: '1.3' }],  // 24px — large headings
+        // Named semantic aliases — use these in components for clarity
+        'label':   ['0.875rem',  { lineHeight: '1.4', fontWeight: '600' }], // 14px bold
+        'body':    ['1rem',      { lineHeight: '1.5' }],  // 16px
+        'heading': ['1.125rem',  { lineHeight: '1.4', fontWeight: '600' }], // 18px
+        'title':   ['1.25rem',   { lineHeight: '1.3', fontWeight: '700' }], // 20px
+      },
+      // Minimum touch target size — use min-h-touch / min-w-touch on interactive elements
+      spacing: {
+        'touch': '44px',
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

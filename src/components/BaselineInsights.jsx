@@ -2,7 +2,8 @@
 // Drop this into your Stats tab, below your existing charts.
 // Usage: <BaselineInsights />
 
-const TEAL = "#00B5AD";
+const PRIMARY = "hsl(var(--primary))";
+const BRAND = "hsl(var(--brand))";
 const BG = "#F7F5F2";
 
 const days = [
@@ -38,7 +39,7 @@ const categories = [
 ];
 
 const dayColor = (score) => {
-  if (score >= 5) return TEAL;
+  if (score >= 5) return BRAND;
   if (score >= 4) return "#2EC4B6";
   if (score >= 3) return "#A8DADC";
   if (score >= 2) return "#CBD5E0";
@@ -49,7 +50,7 @@ const dayTextColor = (score) => (score >= 3 ? "#fff" : "#999");
 
 export default function BaselineInsights() {
   return (
-    <div style={{ padding: "0 16px 32px" }}>
+    <div className="font-sans-ui" style={{ padding: "0 16px 32px" }}>
 
       {/* Section header */}
       <div style={{
@@ -62,12 +63,12 @@ export default function BaselineInsights() {
       }}>
         <div>
           <div style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a" }}>Baseline Insights</div>
-          <div style={{ fontSize: 11, color: "#aaa", marginTop: 2 }}>From Gmail · 162 sales · Aug 2025 – Jun 2026</div>
+          <div style={{ fontSize: 15, color: "#666", marginTop: 2 }}>From Gmail · 162 sales · Aug 2025 – Jun 2026</div>
         </div>
         <div style={{
-          background: `${TEAL}15`,
-          color: TEAL,
-          fontSize: 10,
+          background: `${BRAND}15`,
+          color: PRIMARY,
+          fontSize: 14,
           fontWeight: 700,
           letterSpacing: "0.06em",
           textTransform: "uppercase",
@@ -90,14 +91,14 @@ export default function BaselineInsights() {
       }}>
         <span style={{ fontSize: 20 }}>⚡</span>
         <div>
-          <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: "0.08em" }}>Sweet spot</div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>Tue–Thu · 18:00–21:00 · Week 1</div>
+          <div style={{ fontSize: 14, color: "#666", textTransform: "uppercase", letterSpacing: "0.08em" }}>Sweet spot</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>Tue–Thu · 18:00–21:00 · Week 1</div>
         </div>
       </div>
 
       {/* Day of week */}
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#aaa", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#666", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
           Day of week
         </div>
         <div style={{ display: "flex", gap: 6 }}>
@@ -109,8 +110,8 @@ export default function BaselineInsights() {
               padding: "8px 2px",
               textAlign: "center",
             }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: dayTextColor(d.score) }}>{d.day}</div>
-              <div style={{ fontSize: 9, color: dayTextColor(d.score), opacity: 0.75, marginTop: 1 }}>{d.label}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: dayTextColor(d.score) }}>{d.day}</div>
+              <div style={{ fontSize: 14, color: dayTextColor(d.score), opacity: 0.75, marginTop: 1 }}>{d.label}</div>
             </div>
           ))}
         </div>
@@ -118,7 +119,7 @@ export default function BaselineInsights() {
 
       {/* Time of day */}
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#aaa", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#666", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
           Time of day
         </div>
         <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden" }}>
@@ -129,19 +130,19 @@ export default function BaselineInsights() {
               gap: 10,
               padding: "10px 14px",
               borderBottom: i < times.length - 1 ? "1px solid #F7F5F2" : "none",
-              background: t.score === 5 ? `${TEAL}08` : "transparent",
+              background: t.score === 5 ? `${BRAND}08` : "transparent",
             }}>
               <div style={{ width: 76 }}>
-                <span style={{ fontSize: 13, fontWeight: t.score === 5 ? 700 : 400, color: t.score === 5 ? TEAL : "#555" }}>
+                <span style={{ fontSize: 15, fontWeight: t.score === 5 ? 700 : 400, color: t.score === 5 ? PRIMARY : "#555" }}>
                   {t.slot}
                 </span>
-                <span style={{ fontSize: 11, color: "#bbb", marginLeft: 4 }}>{t.hours}h</span>
+                <span style={{ fontSize: 15, color: "#666", marginLeft: 4 }}>{t.hours}h</span>
               </div>
               <div style={{ flex: 1, height: 6, background: "#eee", borderRadius: 3, overflow: "hidden" }}>
                 <div style={{
                   width: `${(t.score / 5) * 100}%`,
                   height: "100%",
-                  background: t.score === 5 ? TEAL : "#C8E6E5",
+                  background: t.score === 5 ? BRAND : "#C8E6E5",
                   borderRadius: 3,
                 }} />
               </div>
@@ -152,9 +153,9 @@ export default function BaselineInsights() {
         <div style={{
           marginTop: 8,
           padding: "10px 12px",
-          background: `${TEAL}10`,
+          background: `${BRAND}10`,
           borderRadius: 8,
-          fontSize: 12,
+          fontSize: 15,
           color: "#555",
           lineHeight: 1.5,
         }}>
@@ -164,7 +165,7 @@ export default function BaselineInsights() {
 
       {/* Week of month */}
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#aaa", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#666", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
           Week of month
         </div>
         <div style={{ display: "flex", gap: 6 }}>
@@ -177,17 +178,17 @@ export default function BaselineInsights() {
               padding: "10px 6px",
               textAlign: "center",
             }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: w.score >= 4 ? "#fff" : "#333" }}>{w.label}</div>
-              <div style={{ fontSize: 10, color: w.score >= 4 ? "rgba(255,255,255,0.75)" : "#bbb", marginTop: 1 }}>{w.dates}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: w.score >= 4 ? "#fff" : "#333" }}>{w.label}</div>
+              <div style={{ fontSize: 14, color: w.score >= 4 ? "rgba(255,255,255,0.75)" : "#666", marginTop: 1 }}>{w.dates}</div>
               {w.note && (
-                <div style={{ fontSize: 9, color: w.score >= 4 ? "#fff" : "#999", marginTop: 3 }}>{w.note}</div>
+                <div style={{ fontSize: 14, color: w.score >= 4 ? "#fff" : "#666", marginTop: 3 }}>{w.note}</div>
               )}
               <div style={{ display: "flex", gap: 2, justifyContent: "center", marginTop: 5 }}>
                 {[1,2,3,4,5].map(i => (
                   <div key={i} style={{
                     width: 4, height: 4, borderRadius: "50%",
                     background: i <= w.score
-                      ? (w.score >= 4 ? "rgba(255,255,255,0.8)" : TEAL)
+                      ? (w.score >= 4 ? "rgba(255,255,255,0.8)" : BRAND)
                       : (w.score >= 4 ? "rgba(255,255,255,0.25)" : "#ddd"),
                   }} />
                 ))}
@@ -199,7 +200,7 @@ export default function BaselineInsights() {
 
       {/* Top categories */}
       <div>
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#aaa", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#666", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
           Top categories
         </div>
         <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden" }}>
@@ -214,14 +215,14 @@ export default function BaselineInsights() {
               <span style={{ fontSize: 18 }}>{c.emoji}</span>
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                  <span style={{ fontSize: 13, fontWeight: i === 0 ? 700 : 400, color: "#333" }}>{c.name}</span>
-                  <span style={{ fontSize: 12, color: TEAL, fontWeight: 600 }}>{c.count}</span>
+                  <span style={{ fontSize: 15, fontWeight: i === 0 ? 700 : 400, color: "#333" }}>{c.name}</span>
+                  <span style={{ fontSize: 15, color: PRIMARY, fontWeight: 600 }}>{c.count}</span>
                 </div>
                 <div style={{ height: 4, background: "#eee", borderRadius: 2, overflow: "hidden" }}>
                   <div style={{
                     width: `${(c.count / 45) * 100}%`,
                     height: "100%",
-                    background: i === 0 ? TEAL : "#C8E6E5",
+                    background: i === 0 ? BRAND : "#C8E6E5",
                     borderRadius: 2,
                   }} />
                 </div>

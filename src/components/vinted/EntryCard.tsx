@@ -6,9 +6,9 @@ import { CATEGORIES, CONDITIONS } from "@/lib/listingOptions";
 
 type Props = { listing: Listing };
 
-const labelCls = "block text-[11px] font-bold uppercase tracking-[1px] text-muted-foreground mb-1.5 font-sans-ui";
+const labelCls = "block text-label uppercase tracking-[1px] text-muted-foreground mb-1.5 font-sans-ui";
 const inputCls =
-  "w-full rounded-[8px] border-[1.5px] border-border bg-background px-2 py-2 text-[14px] font-sans-ui focus:border-primary focus:outline-none";
+  "w-full rounded-[8px] border-[1.5px] border-border bg-background px-2 py-2 text-sm font-sans-ui focus:border-primary";
 
 export function EntryCard({ listing }: Props) {
   const { update, remove } = useListings();
@@ -31,7 +31,7 @@ export function EntryCard({ listing }: Props) {
       >
         <div className="min-w-0 flex-1">
           <div className="text-[15px] font-bold truncate">{listing.item}</div>
-          <div className="text-[12px] text-muted-foreground font-sans-ui mt-0.5">
+          <div className="text-sm text-muted-foreground font-sans-ui mt-0.5">
             {listing.date} · {listing.time} ·{" "}
             <span className="text-primary font-semibold">€{listing.price}</span>
           </div>
@@ -64,7 +64,7 @@ export function EntryCard({ listing }: Props) {
         <div className="border-t border-border">
           {readyFor24hNudge && (
             <div className="px-4 pt-3">
-              <div className="rounded-[10px] bg-warn/10 px-3 py-2.5 text-[12px] font-semibold text-warn font-sans-ui">
+              <div className="rounded-[10px] bg-warn/10 px-3 py-2.5 text-sm font-semibold text-warn font-sans-ui">
                 ⏱ Ready for 24h data — add your views, favourites and messages
               </div>
             </div>
@@ -131,14 +131,14 @@ function ViewMode({
       <>
         <Log24Form listing={listing} onSave={onSave24} />
         <div className="flex gap-3 pt-3">
-          <button onClick={onEdit} className="text-[12px] text-primary font-sans-ui">
+          <button onClick={onEdit} className="text-sm text-primary font-sans-ui">
             ✏️ Edit
           </button>
           <button
             onClick={() => {
               if (confirm("Delete this entry?")) onDelete();
             }}
-            className="text-[12px] text-destructive font-sans-ui"
+            className="text-sm text-destructive font-sans-ui"
           >
             Delete
           </button>
@@ -157,19 +157,19 @@ function ViewMode({
         </div>
       )}
       {listing.sold && listing.sold_when && (
-        <div className="text-[12px] font-semibold text-success font-sans-ui">
+        <div className="text-sm font-semibold text-success font-sans-ui">
           ✓ Sold: {listing.sold_when}
         </div>
       )}
       <div className="flex gap-3 pt-1">
-        <button onClick={onEdit} className="text-[12px] text-primary font-sans-ui">
+        <button onClick={onEdit} className="text-sm text-primary font-sans-ui">
           ✏️ Edit
         </button>
         <button
           onClick={() => {
             if (confirm("Delete this entry?")) onDelete();
           }}
-          className="text-[12px] text-destructive font-sans-ui"
+          className="text-sm text-destructive font-sans-ui"
         >
           Delete
         </button>
@@ -202,13 +202,13 @@ function Log24Form({
 
   return (
     <div className="mt-3 rounded-[10px] bg-warn/5 p-3 space-y-3">
-      <div className="text-[12px] font-bold text-warn font-sans-ui">📊 Log 24hr data</div>
+      <div className="text-sm font-bold text-warn font-sans-ui">📊 Log 24hr data</div>
       <div className="grid grid-cols-3 gap-2">
         <Field label="Views" value={views} onChange={setViews} />
         <Field label="Favs" value={favs} onChange={setFavs} />
         <Field label="Msgs" value={msgs} onChange={setMsgs} />
       </div>
-      <label className="flex items-center gap-2 text-[13px] font-sans-ui">
+      <label className="flex items-center gap-2 text-sm font-sans-ui">
         <input type="checkbox" checked={sold} onChange={(e) => setSold(e.target.checked)} />
         Sold?
       </label>
@@ -288,7 +288,7 @@ function EditForm({
 
   return (
     <div className="mt-3 rounded-[10px] bg-primary/5 p-3 space-y-3">
-      <div className="text-[12px] font-bold text-primary font-sans-ui">✏️ Edit entry</div>
+      <div className="text-sm font-bold text-primary font-sans-ui">✏️ Edit entry</div>
       <div>
         <label className={labelCls}>Item name</label>
         <input className={inputCls} value={item} onChange={(e) => setItem(e.target.value)} />
@@ -353,7 +353,7 @@ function EditForm({
         <Field label="Favs" value={favs} onChange={setFavs} />
         <Field label="Msgs" value={msgs} onChange={setMsgs} />
       </div>
-      <label className="flex items-center gap-2 text-[13px] font-sans-ui">
+      <label className="flex items-center gap-2 text-sm font-sans-ui">
         <input type="checkbox" checked={sold} onChange={(e) => setSold(e.target.checked)} />
         Sold?
       </label>

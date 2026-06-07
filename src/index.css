@@ -18,16 +18,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 10%;
 
-    --primary: 176 100% 35%;       /* #00B5AD teal */
+    --primary: 176 100% 24%;       /* #007A75 — darkened teal, passes 4.5:1 on white */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 36 21% 96%;
     --secondary-foreground: 0 0% 10%;
 
     --muted: 36 21% 96%;
-    --muted-foreground: 0 0% 54%;  /* #8A8A8A */
+    --muted-foreground: 0 0% 40%;  /* #666666 — passes 4.5:1 on #F7F5F2 */
 
-    --accent: 176 100% 35%;
+    --accent: 176 100% 24%;        /* Match primary — darkened teal */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 71% 60%;      /* #E05252 */
@@ -41,9 +41,16 @@ All colors MUST be HSL.
 
     --border: 33 22% 89%;          /* #E8E4DF */
     --input: 33 22% 89%;
-    --ring: 176 100% 35%;
+    --ring: 176 100% 24%;          /* Match primary */
 
-    --radius: 0.5rem;
+    --brand: 176 100% 35%;         /* #00B5AD — original teal, use for fills/borders/icons only */
+
+    /* Mobile-first typography scale */
+    --font-size-base: 1rem;        /* 16px — minimum readable body text */
+    --font-size-sm: 0.9375rem;     /* 15px — secondary text, still comfortable */
+    --font-size-xs: 0.875rem;      /* 14px — labels only, never body copy */
+    --font-size-lg: 1.125rem;      /* 18px — card headings */
+    --font-size-xl: 1.25rem;       /* 20px — screen titles */
 
     --sidebar-background: 0 0% 98%;
 
@@ -106,14 +113,25 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  /* Focus styles — keyboard and switch users must always see where focus is */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
   html {
+    font-size: 16px;      /* Anchor for rem calculations — never below 16px */
     max-width: 100%;
     overflow-x: hidden;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: var(--font-size-base); /* 16px base — never go smaller for body text */
+    line-height: 1.5;                 /* Comfortable reading on mobile */
+    -webkit-font-smoothing: antialiased;
     max-width: 100%;
     overflow-x: hidden;
   }
@@ -124,9 +142,30 @@ All colors MUST be HSL.
   }
 }
 
-.font-sans-ui {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* Keep Georgia available as a display/accent font if needed for headings */
+.font-display {
+  font-family: Georgia, 'Times New Roman', serif;
 }
+
+.font-sans-ui {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Minimum 44×44px touch targets — apply to all interactive elements */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Typography utilities using the scale tokens */
+.text-body   { font-size: var(--font-size-base); }   /* 16px */
+.text-body-sm { font-size: var(--font-size-sm); }    /* 15px */
+.text-label  { font-size: var(--font-size-xs); font-weight: 600; }  /* 14px bold — labels only */
+.text-heading { font-size: var(--font-size-lg); font-weight: 600; } /* 18px */
+.text-title  { font-size: var(--font-size-xl); font-weight: 700; }  /* 20px */
 
 .safe-x {
   padding-left: max(1rem, env(safe-area-inset-left));

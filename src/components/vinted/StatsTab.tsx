@@ -12,7 +12,7 @@ export function StatsTab() {
         <div className="safe-x safe-b py-4">
           <div className="bg-card rounded-[14px] border border-border p-6 text-center">
             <div className="text-[28px]">📈</div>
-            <div className="text-[13px] text-muted-foreground font-sans-ui mt-2">
+            <div className="text-sm text-muted-foreground font-sans-ui mt-2">
               Log at least 2 items with 24hr data to see insights
             </div>
           </div>
@@ -42,7 +42,7 @@ function Card({ label, value, sub, color }: { label: string; value: string; sub:
     <div className="bg-card rounded-[14px] border border-border p-3.5">
       <div className="text-[10px] font-bold uppercase tracking-[1px] text-muted-foreground font-sans-ui">{label}</div>
       <div className={`text-[20px] font-extrabold mt-1 ${color}`}>{value}</div>
-      <div className="text-[11px] text-muted-foreground font-sans-ui mt-0.5">{sub}</div>
+      <div className="text-sm text-muted-foreground font-sans-ui mt-0.5">{sub}</div>
     </div>
   );
 }

@@ -51,8 +51,8 @@ export function AdvisorTab() {
     <div className="flex flex-col h-[calc(100vh-150px)]">
       <div className="flex-1 overflow-y-auto safe-x py-4 min-w-0">
         <div className="rounded-[12px] bg-primary/10 p-3.5 mb-4">
-          <div className="text-[13px] font-bold text-primary font-sans-ui">🤖 AI Advisor</div>
-          <div className="text-[12px] text-muted-foreground font-sans-ui leading-relaxed mt-1">
+          <div className="text-sm font-bold text-primary font-sans-ui">🤖 AI Advisor</div>
+          <div className="text-sm text-muted-foreground font-sans-ui leading-relaxed mt-1">
             Asks questions based on your actual logged data — not generic tips. The more you log, the smarter the answers.
           </div>
         </div>
@@ -66,7 +66,7 @@ export function AdvisorTab() {
               <button
                 key={s}
                 onClick={() => send(s)}
-                className="w-full text-left bg-card border-[1.5px] border-border rounded-[12px] px-3.5 py-3 text-[13px] font-medium font-sans-ui hover:border-primary transition-colors"
+                className="w-full text-left bg-card border-[1.5px] border-border rounded-[12px] px-3.5 py-3 text-sm font-medium font-sans-ui hover:border-primary transition-colors"
               >
                 {s}
               </button>
@@ -77,7 +77,7 @@ export function AdvisorTab() {
             {messages.map((m, i) => (
               <div
                 key={i}
-                className={`max-w-[85%] px-3.5 py-2.5 font-sans-ui text-[14px] leading-relaxed whitespace-pre-wrap ${
+                className={`max-w-[85%] px-3.5 py-2.5 font-sans-ui text-sm leading-relaxed whitespace-pre-wrap ${
                   m.role === "user"
                     ? "self-end bg-primary text-primary-foreground rounded-[14px_14px_4px_14px]"
                     : m.error
@@ -89,7 +89,7 @@ export function AdvisorTab() {
               </div>
             ))}
             {loading && (
-              <div className="self-start bg-card border-[1.5px] border-border rounded-[14px_14px_14px_4px] px-3.5 py-2.5 text-[14px] text-muted-foreground font-sans-ui">
+              <div className="self-start bg-card border-[1.5px] border-border rounded-[14px_14px_14px_4px] px-3.5 py-2.5 text-sm text-muted-foreground font-sans-ui">
                 Thinking…
               </div>
             )}
@@ -106,13 +106,13 @@ export function AdvisorTab() {
             if (e.key === "Enter") send(input);
           }}
           placeholder="Ask about your listings…"
-          className="flex-1 rounded-[12px] border-[1.5px] border-border bg-card px-3.5 py-2.5 text-[14px] font-sans-ui focus:border-primary focus:outline-none"
+          className="flex-1 rounded-[12px] border-[1.5px] border-border bg-card px-3.5 py-2.5 text-sm font-sans-ui focus:border-primary"
         />
         <button
           onClick={() => send(input)}
           disabled={!input.trim() || loading}
-          className={`rounded-[12px] px-4 py-2.5 text-[14px] font-bold font-sans-ui ${
-            !input.trim() || loading ? "bg-[#ccc] text-white cursor-not-allowed" : "bg-primary text-primary-foreground"
+          className={`rounded-[12px] px-4 py-2.5 text-sm font-bold font-sans-ui ${
+            !input.trim() || loading ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-primary text-primary-foreground"
           }`}
         >
           →

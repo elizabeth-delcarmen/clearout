@@ -21,7 +21,7 @@ export function Tabs({ active, onChange, entryCount }: Props) {
           <button
             key={t.key}
             onClick={() => onChange(t.key)}
-            className={`min-w-0 flex-1 py-3 text-[12px] font-sans-ui transition-colors ${
+            className={`min-w-0 flex-1 py-3 text-sm font-sans-ui transition-colors ${
               isActive
                 ? "text-primary font-extrabold border-b-[2.5px] border-primary"
                 : "text-muted-foreground font-medium"

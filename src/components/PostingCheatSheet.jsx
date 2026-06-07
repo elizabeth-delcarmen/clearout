@@ -15,7 +15,8 @@
 
 import { useState, useEffect } from "react";
 
-const TEAL = "#00B5AD";
+const PRIMARY = "hsl(var(--primary))";
+const BRAND = "hsl(var(--brand))";
 
 const days = [
   { day: "Mon", score: 1 },
@@ -43,7 +44,7 @@ const rules = {
 };
 
 const dayColor = (score) => {
-  if (score >= 5) return TEAL;
+  if (score >= 5) return BRAND;
   if (score >= 4) return "#2EC4B6";
   if (score >= 3) return "#A8DADC";
   if (score >= 2) return "#CBD5E0";
@@ -87,7 +88,7 @@ export default function PostingCheatSheet() {
           width: 48,
           height: 48,
           borderRadius: "50%",
-          background: TEAL,
+          background: BRAND,
           border: "none",
           boxShadow: "0 4px 16px rgba(0,181,173,0.4)",
           cursor: "pointer",
@@ -120,6 +121,7 @@ export default function PostingCheatSheet() {
         >
           {/* ── Bottom sheet ── */}
           <div
+            className="font-sans-ui"
             style={{
               width: "100%",
               maxHeight: "85vh",
@@ -144,7 +146,7 @@ export default function PostingCheatSheet() {
             }}>
               <div>
                 <div style={{ fontSize: 18, fontWeight: 700, color: "#1a1a1a" }}>Posting Cheat Sheet</div>
-                <div style={{ fontSize: 11, color: "#aaa", marginTop: 2 }}>From 162 sales · Aug 2025 – Jun 2026</div>
+                <div style={{ fontSize: 15, color: "#666", marginTop: 2 }}>From 162 sales · Aug 2025 – Jun 2026</div>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -173,14 +175,14 @@ export default function PostingCheatSheet() {
               }}>
                 <span style={{ fontSize: 20 }}>⚡</span>
                 <div>
-                  <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: "0.08em" }}>Sweet spot</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>Tue–Thu · 18:00–21:00 · Week 1</div>
+                  <div style={{ fontSize: 14, color: "#666", textTransform: "uppercase", letterSpacing: "0.08em" }}>Sweet spot</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>Tue–Thu · 18:00–21:00 · Week 1</div>
                 </div>
               </div>
 
               {/* Day strip — today highlighted */}
               <div style={{ marginBottom: 16 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#aaa", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#666", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
                   Day of week
                 </div>
                 <div style={{ display: "flex", gap: 6 }}>
@@ -195,7 +197,7 @@ export default function PostingCheatSheet() {
                       outlineOffset: 2,
                       position: "relative",
                     }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: dayTextColor(d.score) }}>{d.day}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: dayTextColor(d.score) }}>{d.day}</div>
                       {i === todayIndex && (
                         <div style={{
                           position: "absolute",
@@ -211,8 +213,8 @@ export default function PostingCheatSheet() {
                   ))}
                 </div>
                 {/* Today label */}
-                <div style={{ textAlign: "center", marginTop: 10, fontSize: 11, color: "#aaa" }}>
-                  Today: <strong style={{ color: dayColor(days[todayIndex].score) === "#E8E4DF" ? "#999" : dayColor(days[todayIndex].score) }}>
+                <div style={{ textAlign: "center", marginTop: 10, fontSize: 15, color: "#666" }}>
+                  Today: <strong style={{ color: dayColor(days[todayIndex].score) === "#E8E4DF" ? "#666" : PRIMARY }}>
                     {days[todayIndex].day}
                   </strong>
                   {days[todayIndex].score >= 4 ? " ✅ Good day to post" : days[todayIndex].score <= 1 ? " ❌ Avoid today" : " — Decent"}
@@ -223,16 +225,16 @@ export default function PostingCheatSheet() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 4 }}>
                 {/* Post when */}
                 <div style={{ background: "#fff", borderRadius: 12, padding: "12px" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: TEAL, marginBottom: 8 }}>✅ Post when</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: PRIMARY, marginBottom: 8 }}>✅ Post when</div>
                   {rules.good.map((r, i) => (
-                    <div key={i} style={{ fontSize: 11, color: "#444", marginBottom: 6, lineHeight: 1.4 }}>· {r}</div>
+                    <div key={i} style={{ fontSize: 15, color: "#444", marginBottom: 6, lineHeight: 1.4 }}>· {r}</div>
                   ))}
                 </div>
                 {/* Avoid */}
                 <div style={{ background: "#fff", borderRadius: 12, padding: "12px" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#E07B6A", marginBottom: 8 }}>❌ Avoid</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#E07B6A", marginBottom: 8 }}>❌ Avoid</div>
                   {rules.avoid.map((r, i) => (
-                    <div key={i} style={{ fontSize: 11, color: "#444", marginBottom: 6, lineHeight: 1.4 }}>· {r}</div>
+                    <div key={i} style={{ fontSize: 15, color: "#444", marginBottom: 6, lineHeight: 1.4 }}>· {r}</div>
                   ))}
                 </div>
               </div>
