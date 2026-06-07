@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useListings } from "@/hooks/useListings";
 import { CATEGORIES, CONDITIONS } from "@/lib/listingOptions";
+import { isVintedUrl, scrapeVintedListing } from "@/lib/vintedScraper";
 
 type Props = { onSaved: () => void };
 
@@ -16,6 +17,8 @@ const inputCls =
 
 export function LogTab({ onSaved }: Props) {
   const { add } = useListings();
+  const [url, setUrl] = useState("");
+  const [fetchStatus, setFetchStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [item, setItem] = useState("");
   const [price, setPrice] = useState("");
   const [type, setType] = useState("New listing");
@@ -24,6 +27,23 @@ export function LogTab({ onSaved }: Props) {
   const [date, setDate] = useState(todayStr());
   const [time, setTime] = useState(nowStr());
   const [state, setState] = useState<"idle" | "saving" | "saved">("idle");
+
+  const handleUrlChange = async (val: string) => {
+    setUrl(val);
+    if (!isVintedUrl(val)) {
+      if (fetchStatus !== "idle") setFetchStatus("idle");
+      return;
+    }
+    setFetchStatus("loading");
+    const result = await scrapeVintedListing(val);
+    if (result.ok) {
+      setItem(result.item);
+      setPrice(result.price);
+      setFetchStatus("ok");
+    } else {
+      setFetchStatus("error");
+    }
+  };
 
   const ready = item.trim() && price.trim() && category && condition;
 
@@ -46,6 +66,8 @@ export function LogTab({ onSaved }: Props) {
         sold_when: null,
       });
       setState("saved");
+      setUrl("");
+      setFetchStatus("idle");
       setItem("");
       setPrice("");
       setType("New listing");
@@ -71,6 +93,24 @@ export function LogTab({ onSaved }: Props) {
 
   return (
     <div className="safe-x safe-b py-4 space-y-4">
+      <div>
+        <label className={labelCls}>Vinted listing URL (optional)</label>
+        <input
+          className={inputCls}
+          placeholder="https://www.vinted.co.uk/items/…"
+          value={url}
+          onChange={(e) => handleUrlChange(e.target.value)}
+        />
+        {fetchStatus === "loading" && (
+          <p className="mt-1.5 text-xs text-muted-foreground animate-pulse font-sans-ui">Fetching listing…</p>
+        )}
+        {fetchStatus === "ok" && (
+          <p className="mt-1.5 text-xs text-green-600 dark:text-green-400 font-sans-ui">✓ Name and price filled in</p>
+        )}
+        {fetchStatus === "error" && (
+          <p className="mt-1.5 text-xs text-destructive font-sans-ui">Could not fetch — fill in manually below</p>
+        )}
+      </div>
       <div>
         <label className={labelCls}>Item name</label>
         <input
