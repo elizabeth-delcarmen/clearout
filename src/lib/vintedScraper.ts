@@ -3,7 +3,6 @@ const PROXY = "https://api.allorigins.win/get?url=";
 // Supabase Edge Function URL — used first, proxy as fallback
 const EDGE_FN =
   `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/vinted-scrape`;
-const ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 export type ScrapeResult =
   | { ok: true; item: string; price: string }
@@ -14,9 +13,7 @@ export function isVintedUrl(url: string): boolean {
 }
 
 async function scrapeViaEdgeFunction(url: string): Promise<ScrapeResult> {
-  const resp = await fetch(`${EDGE_FN}?url=${encodeURIComponent(url)}`, {
-    headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
-  });
+  const resp = await fetch(`${EDGE_FN}?url=${encodeURIComponent(url)}`);
   if (!resp.ok) return { ok: false, reason: `Edge function error ${resp.status}` };
   const data = await resp.json();
   if (data.error) return { ok: false, reason: data.error };
