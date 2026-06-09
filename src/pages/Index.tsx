@@ -17,7 +17,7 @@ const Index = () => {
       <div className="mx-auto w-full max-w-[480px] min-h-screen min-h-[100dvh] bg-background flex flex-col overflow-x-hidden">
         <Header needsDataCount={needs} />
         <Tabs active={tab} onChange={setTab} entryCount={listings.length} />
-        <div className="flex-1 min-w-0 overflow-x-hidden">
+        <div className="flex-1 min-w-0 overflow-x-hidden" data-tab={tab}>
           {tab === "log" && <LogTab onSaved={() => setTab("entries")} />}
           {tab === "entries" && <EntriesTab />}
           {tab === "insights" && <StatsTab />}

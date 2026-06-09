@@ -3,6 +3,7 @@ import type { Listing } from "@/hooks/useListings";
 import { useListings } from "@/hooks/useListings";
 import { isReadyFor24hNudge } from "@/lib/listings";
 import { CATEGORIES, CONDITIONS } from "@/lib/listingOptions";
+import { AutoGrowTextarea } from "./AutoGrowTextarea";
 
 type Props = { listing: Listing };
 
@@ -130,6 +131,14 @@ function ViewMode({
     return (
       <>
         <Log24Form listing={listing} onSave={onSave24} />
+        {listing.notes && (
+          <div className="text-sm font-sans-ui pt-3">
+            <span className="text-label uppercase tracking-[1px] text-muted-foreground text-[10px]">
+              Notes
+            </span>
+            <p className="mt-1 text-foreground leading-relaxed whitespace-pre-wrap">{listing.notes}</p>
+          </div>
+        )}
         <div className="flex gap-3 pt-3">
           <button onClick={onEdit} className="text-sm text-primary font-sans-ui">
             ✏️ Edit
@@ -159,6 +168,14 @@ function ViewMode({
       {listing.sold && listing.sold_when && (
         <div className="text-sm font-semibold text-success font-sans-ui">
           ✓ Sold: {listing.sold_when}
+        </div>
+      )}
+      {listing.notes && (
+        <div className="text-sm font-sans-ui">
+          <span className="text-label uppercase tracking-[1px] text-muted-foreground text-[10px]">
+            Notes
+          </span>
+          <p className="mt-1 text-foreground leading-relaxed whitespace-pre-wrap">{listing.notes}</p>
         </div>
       )}
       <div className="flex gap-3 pt-1">
@@ -285,6 +302,7 @@ function EditForm({
   const [msgs, setMsgs] = useState(listing.messages ?? "");
   const [sold, setSold] = useState(listing.sold);
   const [soldWhen, setSoldWhen] = useState(listing.sold_when ?? "");
+  const [notes, setNotes] = useState(listing.notes ?? "");
 
   return (
     <div className="mt-3 rounded-[10px] bg-primary/5 p-3 space-y-3">
@@ -345,6 +363,15 @@ function EditForm({
           <input type="time" className={inputCls} value={time} onChange={(e) => setTime(e.target.value)} />
         </div>
       </div>
+      <div>
+        <label className={labelCls}>Notes (optional)</label>
+        <AutoGrowTextarea
+          className={inputCls}
+          placeholder="e.g. sold early, price drop, platform event…"
+          value={notes}
+          onChange={setNotes}
+        />
+      </div>
       <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-[1px] font-sans-ui pt-1">
         24HR DATA
       </div>
@@ -383,6 +410,7 @@ function EditForm({
               messages: msgs || null,
               sold,
               sold_when: sold ? soldWhen : null,
+              notes: notes.trim() || null,
             })
           }
           className="flex-1 rounded-[10px] bg-primary text-primary-foreground py-2.5 font-bold font-sans-ui"

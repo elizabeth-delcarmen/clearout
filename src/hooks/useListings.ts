@@ -16,6 +16,7 @@ export type Listing = {
   messages: string | null;
   sold: boolean;
   sold_when: string | null;
+  notes: string | null;
 };
 
 export type NewListing = Omit<Listing, "id" | "created_at">;

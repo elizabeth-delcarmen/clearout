@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useListings } from "@/hooks/useListings";
 import { CATEGORIES, CONDITIONS } from "@/lib/listingOptions";
 import { isVintedUrl, scrapeVintedListing } from "@/lib/vintedScraper";
+import { AutoGrowTextarea } from "./AutoGrowTextarea";
 
 type Props = { onSaved: () => void };
 
@@ -26,6 +27,7 @@ export function LogTab({ onSaved }: Props) {
   const [condition, setCondition] = useState("");
   const [date, setDate] = useState(todayStr());
   const [time, setTime] = useState(nowStr());
+  const [notes, setNotes] = useState("");
   const [state, setState] = useState<"idle" | "saving" | "saved">("idle");
 
   const handleUrlChange = async (val: string) => {
@@ -65,6 +67,7 @@ export function LogTab({ onSaved }: Props) {
         messages: null,
         sold: false,
         sold_when: null,
+        notes: notes.trim() || null,
       });
       setState("saved");
       setUrl("");
@@ -76,6 +79,7 @@ export function LogTab({ onSaved }: Props) {
       setCondition("");
       setDate(todayStr());
       setTime(nowStr());
+      setNotes("");
       setTimeout(() => {
         setState("idle");
         onSaved();
@@ -182,6 +186,15 @@ export function LogTab({ onSaved }: Props) {
           <label className={labelCls}>Time</label>
           <input type="time" className={inputCls} value={time} onChange={(e) => setTime(e.target.value)} />
         </div>
+      </div>
+      <div>
+        <label className={labelCls}>Notes (optional)</label>
+        <AutoGrowTextarea
+          className={inputCls}
+          placeholder="e.g. sold early, price drop, platform event…"
+          value={notes}
+          onChange={setNotes}
+        />
       </div>
       <button
         disabled={!ready || state !== "idle"}

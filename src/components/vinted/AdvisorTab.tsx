@@ -48,7 +48,7 @@ export function AdvisorTab() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-150px)]">
+    <div className="flex flex-col h-[calc(100dvh-150px)]">
       <div className="flex-1 overflow-y-auto safe-x py-4 min-w-0">
         <div className="rounded-[12px] bg-primary/10 p-3.5 mb-4">
           <div className="text-sm font-bold text-primary font-sans-ui">🤖 AI Advisor</div>

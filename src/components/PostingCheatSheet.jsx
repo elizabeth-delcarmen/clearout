@@ -81,9 +81,9 @@ export default function PostingCheatSheet() {
       <button
         onClick={() => setOpen(true)}
         aria-label="Open posting cheat sheet"
+        className="cheatsheet-fab"
         style={{
           position: "fixed",
-          bottom: "calc(1.25rem + env(safe-area-inset-bottom))",
           right: "max(1rem, env(safe-area-inset-right))",
           width: 48,
           height: 48,

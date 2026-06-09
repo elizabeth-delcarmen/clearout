@@ -24,6 +24,7 @@ export type Database = {
           id: string
           item: string
           messages: string | null
+          notes: string | null
           price: number
           sold: boolean
           sold_when: string | null
@@ -40,6 +41,7 @@ export type Database = {
           id?: string
           item: string
           messages?: string | null
+          notes?: string | null
           price: number
           sold?: boolean
           sold_when?: string | null
@@ -56,6 +58,7 @@ export type Database = {
           id?: string
           item?: string
           messages?: string | null
+          notes?: string | null
           price?: number
           sold?: boolean
           sold_when?: string | null
