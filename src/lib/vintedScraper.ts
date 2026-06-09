@@ -24,8 +24,12 @@ const CONDITION_CANONICAL = [
 export function parseConditionFromHtml(html: string): string | null {
   for (const label of CONDITION_CANONICAL) {
     const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const re = new RegExp(`"value":"${escaped}"\\s*,\\s*"style":"body"`, "i");
-    if (re.test(html)) return label;
+    // Plain JSON in HTML, or escaped quotes in Next.js RSC payload (\\"value\\":\\"...\\")
+    const patterns = [
+      new RegExp(`"value":"${escaped}"\\s*,\\s*"style":"body"`, "i"),
+      new RegExp(`\\\\"value\\\\":\\\\"${escaped}\\\\"\\s*,\\s*\\\\"style\\\\":\\\\"body\\\\"`, "i"),
+    ];
+    if (patterns.some((re) => re.test(html))) return label;
   }
   return null;
 }
