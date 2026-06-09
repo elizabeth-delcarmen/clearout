@@ -5,6 +5,23 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const CONDITION_CANONICAL = [
+  "New without tags",
+  "New with tags",
+  "Very good",
+  "Satisfactory",
+  "Good",
+] as const;
+
+function parseConditionFromHtml(html: string): string | null {
+  for (const label of CONDITION_CANONICAL) {
+    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(`"value":"${escaped}"\\s*,\\s*"style":"body"`, "i");
+    if (re.test(html)) return label;
+  }
+  return null;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
@@ -61,8 +78,9 @@ serve(async (req) => {
 
     const item = titleMatch[1].replace(/\s*\|\s*Vinted.*$/, "").trim();
     const price = priceMatch[1].replace(",", ".");
+    const condition = parseConditionFromHtml(html);
 
-    return new Response(JSON.stringify({ item, price }), {
+    return new Response(JSON.stringify({ item, price, condition }), {
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });
   } catch (err) {

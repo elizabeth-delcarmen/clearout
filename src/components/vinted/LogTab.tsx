@@ -39,6 +39,7 @@ export function LogTab({ onSaved }: Props) {
     if (result.ok) {
       setItem(result.item);
       setPrice(result.price);
+      if (result.condition) setCondition(result.condition);
       setFetchStatus("ok");
     } else {
       setFetchStatus("error");
@@ -105,7 +106,9 @@ export function LogTab({ onSaved }: Props) {
           <p className="mt-1.5 text-xs text-muted-foreground animate-pulse font-sans-ui">Fetching listing…</p>
         )}
         {fetchStatus === "ok" && (
-          <p className="mt-1.5 text-xs text-green-600 dark:text-green-400 font-sans-ui">✓ Name and price filled in</p>
+          <p className="mt-1.5 text-xs text-green-600 dark:text-green-400 font-sans-ui">
+            ✓ Name and price filled in{condition ? " — condition too" : ""}
+          </p>
         )}
         {fetchStatus === "error" && (
           <p className="mt-1.5 text-xs text-destructive font-sans-ui">Could not fetch — fill in manually below</p>
