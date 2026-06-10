@@ -25,6 +25,43 @@ function parseConditionFromHtml(html: string): string | null {
   return null;
 }
 
+// Keep in sync with src/lib/vintedScraper.ts
+function normalizePrice(raw: string): string {
+  return raw.replace(",", ".");
+}
+
+function parsePriceFromHtml(html: string, itemId?: string): string | null {
+  const domMatch = html.match(
+    /data-testid="item-price"[^>]*>([\s\S]{0,200}?)([\d]+(?:[.,][\d]+)?)/,
+  );
+  if (domMatch) return normalizePrice(domMatch[2]);
+
+  const priceAmountMatch = html.match(/"price_amount"\s*:\s*([\d]+(?:[.,][\d]+)?)/);
+  if (priceAmountMatch) return normalizePrice(priceAmountMatch[1]);
+
+  const jsonLdMatch = html.match(
+    /"@type"\s*:\s*"Offer"[\s\S]{0,500}?"price"\s*:\s*"?([\d]+(?:[.,][\d]+)?)"?/,
+  );
+  if (jsonLdMatch) return normalizePrice(jsonLdMatch[1]);
+
+  if (itemId) {
+    const itemBlockMatch = html.match(
+      new RegExp(`"id"\\s*:\\s*${itemId}[\\s\\S]{0,300}?"price"\\s*:\\s*"?([\\d]+(?:[.,][\\d]+)?)"?`),
+    );
+    if (itemBlockMatch) return normalizePrice(itemBlockMatch[1]);
+  }
+
+  const titleMatch = html.match(/<meta property="og:title" content="([^"]+)"/);
+  if (titleMatch) {
+    const titleIdx = html.indexOf(titleMatch[0]);
+    const afterTitle = html.slice(titleIdx, Math.min(html.length, titleIdx + 2000));
+    const scopedPrice = afterTitle.match(/"price"\s*:\s*"?([\d]+(?:[.,][\d]+)?)"?/);
+    if (scopedPrice) return normalizePrice(scopedPrice[1]);
+  }
+
+  return null;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
@@ -64,15 +101,12 @@ serve(async (req) => {
     }
 
     const html = await resp.text();
+    const itemId = url.match(/\/items\/(\d+)/)?.[1];
 
     const titleMatch = html.match(/<meta property="og:title" content="([^"]+)"/);
-    const priceJsonMatch = html.match(/"price"\s*:\s*"?([\d]+(?:[.,][\d]+)?)"?/);
-    const priceElementMatch = html.match(
-      /data-testid="item-price"[^>]*>[\s€]*([\d]+(?:[.,][\d]+)?)/,
-    );
-    const priceMatch = priceJsonMatch ?? priceElementMatch;
+    const price = parsePriceFromHtml(html, itemId);
 
-    if (!titleMatch || !priceMatch) {
+    if (!titleMatch || !price) {
       return new Response(JSON.stringify({ error: "Could not parse listing" }), {
         status: 422,
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -80,7 +114,6 @@ serve(async (req) => {
     }
 
     const item = titleMatch[1].replace(/\s*\|\s*Vinted.*$/, "").trim();
-    const price = priceMatch[1].replace(",", ".");
     const condition = parseConditionFromHtml(html);
 
     return new Response(JSON.stringify({ item, price, condition }), {

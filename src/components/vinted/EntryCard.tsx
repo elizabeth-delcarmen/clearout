@@ -1,6 +1,5 @@
 import { useState } from "react";
-import type { Listing } from "@/hooks/useListings";
-import { useListings } from "@/hooks/useListings";
+import { useListings, notesDbValue, type Listing } from "@/hooks/useListings";
 import { isReadyFor24hNudge } from "@/lib/listings";
 import { CATEGORIES, CONDITIONS } from "@/lib/listingOptions";
 import { AutoGrowTextarea } from "./AutoGrowTextarea";
@@ -20,11 +19,11 @@ export function EntryCard({ listing }: Props) {
   const readyFor24hNudge = isReadyFor24hNudge(listing);
   const isRelist = listing.type === "Relist";
 
-  const borderClass = missingData ? "border-warn/40" : "border-border";
+  const borderClass = missingData ? "border-2 border-warn" : "border-[1.5px] border-border";
 
   return (
     <div
-      className={`bg-card rounded-[14px] border-[1.5px] ${borderClass} mb-2.5 shadow-[0_1px_4px_rgba(0,0,0,0.05)]`}
+      className={`bg-card rounded-[14px] ${borderClass} mb-2.5 shadow-[0_1px_4px_rgba(0,0,0,0.05)]`}
     >
       <button
         onClick={() => setExpanded((v) => !v)}
@@ -51,7 +50,7 @@ export function EntryCard({ listing }: Props) {
         </div>
         <div className="flex flex-col items-end gap-1">
           {readyFor24hNudge && (
-            <span className="text-warn text-[10px] leading-none" aria-label="Ready for 24h data">
+            <span className="text-warn-text text-[10px] leading-none" aria-label="Ready for 24h data">
               ●
             </span>
           )}
@@ -65,7 +64,7 @@ export function EntryCard({ listing }: Props) {
         <div className="border-t border-border">
           {readyFor24hNudge && (
             <div className="px-4 pt-3">
-              <div className="rounded-[10px] bg-warn/10 px-3 py-2.5 text-sm font-semibold text-warn font-sans-ui">
+              <div className="rounded-[10px] bg-warn/10 px-3 py-2.5 text-sm font-semibold text-warn-text font-sans-ui">
                 ⏱ Ready for 24h data — add your views, favourites and messages
               </div>
             </div>
@@ -104,7 +103,7 @@ function Badge({
 }) {
   const map: Record<string, string> = {
     primary: "bg-primary/10 text-primary",
-    warn: "bg-warn/10 text-warn",
+    warn: "bg-warn text-warn-foreground",
     success: "bg-success/15 text-success",
   };
   return (
@@ -219,7 +218,7 @@ function Log24Form({
 
   return (
     <div className="mt-3 rounded-[10px] bg-warn/5 p-3 space-y-3">
-      <div className="text-sm font-bold text-warn font-sans-ui">📊 Log 24hr data</div>
+      <div className="text-sm font-bold text-warn-text font-sans-ui">📊 Log 24hr data</div>
       <div className="grid grid-cols-3 gap-2">
         <Field label="Views" value={views} onChange={setViews} />
         <Field label="Favs" value={favs} onChange={setFavs} />
@@ -410,7 +409,7 @@ function EditForm({
               messages: msgs || null,
               sold,
               sold_when: sold ? soldWhen : null,
-              notes: notes.trim() || null,
+              ...notesDbValue(notes, listing.notes),
             })
           }
           className="flex-1 rounded-[10px] bg-primary text-primary-foreground py-2.5 font-bold font-sans-ui"

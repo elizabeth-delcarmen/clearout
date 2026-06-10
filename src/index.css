@@ -36,8 +36,9 @@ All colors MUST be HSL.
     --success: 152 60% 55%;        /* #2ECC8A */
     --success-foreground: 0 0% 100%;
 
-    --warn: 36 91% 55%;            /* #F5A623 */
-    --warn-foreground: 0 0% 100%;
+    --warn: 36 91% 55%;            /* #F5A623 — borders, fills */
+    --warn-foreground: 0 0% 100%;  /* white on warn fills */
+    --warn-text: 32 95% 38%;       /* ~#B8740A — readable amber on white */
 
     --border: 33 22% 89%;          /* #E8E4DF */
     --input: 33 22% 89%;

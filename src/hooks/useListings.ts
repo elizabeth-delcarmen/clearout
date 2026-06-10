@@ -21,6 +21,14 @@ export type Listing = {
 
 export type NewListing = Omit<Listing, "id" | "created_at">;
 
+/** Omit notes from DB payloads when empty so inserts work before migration is applied. */
+export function notesDbValue(notes: string, existing?: string | null): Partial<Pick<Listing, "notes">> {
+  const trimmed = notes.trim();
+  if (trimmed) return { notes: trimmed };
+  if (existing?.trim()) return { notes: null };
+  return {};
+}
+
 let _listings: Listing[] = [];
 let _loading = true;
 const _subs = new Set<() => void>();

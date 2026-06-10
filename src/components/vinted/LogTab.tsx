@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useListings } from "@/hooks/useListings";
+import { useEffect, useRef, useState } from "react";
+import { useListings, notesDbValue } from "@/hooks/useListings";
 import { CATEGORIES, CONDITIONS } from "@/lib/listingOptions";
 import { isVintedUrl, scrapeVintedListing } from "@/lib/vintedScraper";
 import { AutoGrowTextarea } from "./AutoGrowTextarea";
@@ -29,23 +29,37 @@ export function LogTab({ onSaved }: Props) {
   const [time, setTime] = useState(nowStr());
   const [notes, setNotes] = useState("");
   const [state, setState] = useState<"idle" | "saving" | "saved">("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const fetchRequestId = useRef(0);
 
-  const handleUrlChange = async (val: string) => {
-    setUrl(val);
-    if (!isVintedUrl(val)) {
-      if (fetchStatus !== "idle") setFetchStatus("idle");
+  useEffect(() => {
+    if (!isVintedUrl(url)) {
+      setFetchStatus("idle");
       return;
     }
+
+    const requestId = ++fetchRequestId.current;
     setFetchStatus("loading");
-    const result = await scrapeVintedListing(val);
-    if (result.ok) {
-      setItem(result.item);
-      setPrice(result.price);
-      if (result.condition) setCondition(result.condition);
-      setFetchStatus("ok");
-    } else {
-      setFetchStatus("error");
-    }
+
+    const timer = window.setTimeout(async () => {
+      const result = await scrapeVintedListing(url);
+      if (requestId !== fetchRequestId.current) return;
+
+      if (result.ok) {
+        setItem(result.item);
+        setPrice(result.price);
+        if (result.condition) setCondition(result.condition);
+        setFetchStatus("ok");
+      } else {
+        setFetchStatus("error");
+      }
+    }, 400);
+
+    return () => window.clearTimeout(timer);
+  }, [url]);
+
+  const handleUrlChange = (val: string) => {
+    setUrl(val);
   };
 
   const ready = item.trim() && price.trim() && category && condition;
@@ -53,6 +67,7 @@ export function LogTab({ onSaved }: Props) {
   const submit = async () => {
     if (!ready || state !== "idle") return;
     setState("saving");
+    setSaveError(null);
     try {
       await add({
         item: item.trim(),
@@ -67,7 +82,7 @@ export function LogTab({ onSaved }: Props) {
         messages: null,
         sold: false,
         sold_when: null,
-        notes: notes.trim() || null,
+        ...notesDbValue(notes),
       });
       setState("saved");
       setUrl("");
@@ -84,8 +99,13 @@ export function LogTab({ onSaved }: Props) {
         setState("idle");
         onSaved();
       }, 1000);
-    } catch {
+    } catch (err) {
       setState("idle");
+      const message =
+        err && typeof err === "object" && "code" in err && err.code === "PGRST204"
+          ? "Could not save notes — run the database migration to add the notes column."
+          : "Could not save listing. Please try again.";
+      setSaveError(message);
     }
   };
 
@@ -203,6 +223,9 @@ export function LogTab({ onSaved }: Props) {
       >
         {state === "saved" ? "✓ Saved!" : state === "saving" ? "Saving…" : "Save listing"}
       </button>
+      {saveError && (
+        <p className="text-sm text-destructive font-sans-ui">{saveError}</p>
+      )}
       <div className="rounded-[12px] bg-primary/10 p-3.5">
         <div className="text-sm font-bold text-primary font-sans-ui">⏱ Remember</div>
         <div className="text-sm text-muted-foreground font-sans-ui leading-relaxed mt-1">

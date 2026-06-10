@@ -34,17 +34,55 @@ export function parseConditionFromHtml(html: string): string | null {
   return null;
 }
 
-function parseListingFromHtml(html: string): { item: string; price: string; condition: string | null } | null {
-  const titleMatch = html.match(/<meta property="og:title" content="([^"]+)"/);
-  const priceJsonMatch = html.match(/"price"\s*:\s*"?([\d]+(?:[.,][\d]+)?)"?/);
-  const priceElementMatch = html.match(/data-testid="item-price"[^>]*>[\s€]*([\d]+(?:[.,][\d]+)?)/);
-  const priceMatch = priceJsonMatch ?? priceElementMatch;
+function normalizePrice(raw: string): string {
+  return raw.replace(",", ".");
+}
 
-  if (!titleMatch || !priceMatch) return null;
+/** Extract listing price — DOM first, then structured JSON, then scoped fallbacks. */
+export function parsePriceFromHtml(html: string, itemId?: string): string | null {
+  const domMatch = html.match(
+    /data-testid="item-price"[^>]*>([\s\S]{0,200}?)([\d]+(?:[.,][\d]+)?)/,
+  );
+  if (domMatch) return normalizePrice(domMatch[2]);
+
+  const priceAmountMatch = html.match(/"price_amount"\s*:\s*([\d]+(?:[.,][\d]+)?)/);
+  if (priceAmountMatch) return normalizePrice(priceAmountMatch[1]);
+
+  const jsonLdMatch = html.match(
+    /"@type"\s*:\s*"Offer"[\s\S]{0,500}?"price"\s*:\s*"?([\d]+(?:[.,][\d]+)?)"?/,
+  );
+  if (jsonLdMatch) return normalizePrice(jsonLdMatch[1]);
+
+  if (itemId) {
+    const itemBlockMatch = html.match(
+      new RegExp(`"id"\\s*:\\s*${itemId}[\\s\\S]{0,300}?"price"\\s*:\\s*"?([\\d]+(?:[.,][\\d]+)?)"?`),
+    );
+    if (itemBlockMatch) return normalizePrice(itemBlockMatch[1]);
+  }
+
+  const titleMatch = html.match(/<meta property="og:title" content="([^"]+)"/);
+  if (titleMatch) {
+    const titleIdx = html.indexOf(titleMatch[0]);
+    const afterTitle = html.slice(titleIdx, Math.min(html.length, titleIdx + 2000));
+    const scopedPrice = afterTitle.match(/"price"\s*:\s*"?([\d]+(?:[.,][\d]+)?)"?/);
+    if (scopedPrice) return normalizePrice(scopedPrice[1]);
+  }
+
+  return null;
+}
+
+export function parseListingFromHtml(
+  html: string,
+  itemId?: string,
+): { item: string; price: string; condition: string | null } | null {
+  const titleMatch = html.match(/<meta property="og:title" content="([^"]+)"/);
+  const price = parsePriceFromHtml(html, itemId);
+
+  if (!titleMatch || !price) return null;
 
   return {
     item: titleMatch[1].replace(/\s*\|\s*Vinted.*$/, "").trim(),
-    price: priceMatch[1].replace(",", "."),
+    price,
     condition: parseConditionFromHtml(html),
   };
 }
@@ -62,13 +100,17 @@ async function scrapeViaEdgeFunction(url: string): Promise<ScrapeResult> {
   };
 }
 
+function extractItemId(url: string): string | undefined {
+  return url.match(/\/items\/(\d+)/)?.[1];
+}
+
 async function scrapeViaProxy(url: string): Promise<ScrapeResult> {
   const resp = await fetch(`${PROXY}${encodeURIComponent(url)}`);
   if (!resp.ok) return { ok: false, reason: "Proxy request failed" };
   const { contents } = await resp.json();
   if (!contents) return { ok: false, reason: "Empty response from proxy" };
 
-  const parsed = parseListingFromHtml(contents);
+  const parsed = parseListingFromHtml(contents, extractItemId(url));
   if (!parsed) return { ok: false, reason: "Could not parse listing" };
 
   return { ok: true, ...parsed };
