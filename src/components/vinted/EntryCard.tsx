@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useListings, notesDbValue, type Listing } from "@/hooks/useListings";
+import { formatListingDate } from "@/lib/formatDate";
 import { isReadyFor24hNudge } from "@/lib/listings";
 import { CATEGORIES, CONDITIONS } from "@/lib/listingOptions";
 import { AutoGrowTextarea } from "./AutoGrowTextarea";
@@ -32,7 +33,7 @@ export function EntryCard({ listing }: Props) {
         <div className="min-w-0 flex-1">
           <div className="text-[15px] font-bold truncate">{listing.item}</div>
           <div className="text-sm text-muted-foreground font-sans-ui mt-0.5">
-            {listing.date} · {listing.time} ·{" "}
+            {formatListingDate(listing.date)} · {listing.time} ·{" "}
             <span className="text-primary font-semibold">€{listing.price}</span>
           </div>
           <div className="flex flex-wrap gap-1 mt-1.5">
