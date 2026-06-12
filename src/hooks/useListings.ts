@@ -17,6 +17,8 @@ export type Listing = {
   sold: boolean;
   sold_when: string | null;
   notes: string | null;
+  image_url: string | null;
+  vinted_url: string | null;
 };
 
 export type NewListing = Omit<Listing, "id" | "created_at">;

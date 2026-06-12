@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { parsePriceFromHtml, parseListingFromHtml } from "./vintedScraper";
 
 const TITLE = '<meta property="og:title" content="Green Zara jacket | Vinted">';
+const IMAGE = '<meta property="og:image" content="https://images.vinted.net/thumbs/abc123.jpg">';
 
 describe("parsePriceFromHtml", () => {
   it("prefers price_amount over earlier generic shipping price", () => {
@@ -63,6 +64,7 @@ describe("parseListingFromHtml", () => {
   it("returns item title and price together", () => {
     const html = `
       ${TITLE}
+      ${IMAGE}
       <div data-testid="item-price">25.00</div>
     `;
     const result = parseListingFromHtml(html);
@@ -70,7 +72,17 @@ describe("parseListingFromHtml", () => {
       item: "Green Zara jacket",
       price: "25.00",
       condition: null,
+      image_url: "https://images.vinted.net/thumbs/abc123.jpg",
     });
+  });
+
+  it("returns null image_url when og:image is absent", () => {
+    const html = `
+      ${TITLE}
+      <div data-testid="item-price">25.00</div>
+    `;
+    const result = parseListingFromHtml(html);
+    expect(result?.image_url).toBeNull();
   });
 
   it("returns null when title or price is missing", () => {

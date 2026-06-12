@@ -5,7 +5,7 @@ const EDGE_FN =
   `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/vinted-scrape`;
 
 export type ScrapeResult =
-  | { ok: true; item: string; price: string; condition: string | null }
+  | { ok: true; item: string; price: string; condition: string | null; image_url: string | null }
   | { ok: false; reason: string };
 
 export function isVintedUrl(url: string): boolean {
@@ -71,10 +71,15 @@ export function parsePriceFromHtml(html: string, itemId?: string): string | null
   return null;
 }
 
+export function parseImageFromHtml(html: string): string | null {
+  const match = html.match(/<meta property="og:image" content="([^"]+)"/);
+  return match ? match[1] : null;
+}
+
 export function parseListingFromHtml(
   html: string,
   itemId?: string,
-): { item: string; price: string; condition: string | null } | null {
+): { item: string; price: string; condition: string | null; image_url: string | null } | null {
   const titleMatch = html.match(/<meta property="og:title" content="([^"]+)"/);
   const price = parsePriceFromHtml(html, itemId);
 
@@ -84,6 +89,7 @@ export function parseListingFromHtml(
     item: titleMatch[1].replace(/\s*\|\s*Vinted.*$/, "").trim(),
     price,
     condition: parseConditionFromHtml(html),
+    image_url: parseImageFromHtml(html),
   };
 }
 
@@ -97,6 +103,7 @@ async function scrapeViaEdgeFunction(url: string): Promise<ScrapeResult> {
     item: data.item,
     price: data.price,
     condition: data.condition ?? null,
+    image_url: data.image_url ?? null,
   };
 }
 

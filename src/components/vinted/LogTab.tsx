@@ -28,6 +28,7 @@ export function LogTab({ onSaved }: Props) {
   const [date, setDate] = useState(todayStr());
   const [time, setTime] = useState(nowStr());
   const [notes, setNotes] = useState("");
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [state, setState] = useState<"idle" | "saving" | "saved">("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
   const fetchRequestId = useRef(0);
@@ -35,6 +36,7 @@ export function LogTab({ onSaved }: Props) {
   useEffect(() => {
     if (!isVintedUrl(url)) {
       setFetchStatus("idle");
+      setImageUrl(null);
       return;
     }
 
@@ -49,8 +51,10 @@ export function LogTab({ onSaved }: Props) {
         setItem(result.item);
         setPrice(result.price);
         if (result.condition) setCondition(result.condition);
+        setImageUrl(result.image_url);
         setFetchStatus("ok");
       } else {
+        setImageUrl(null);
         setFetchStatus("error");
       }
     }, 400);
@@ -82,6 +86,8 @@ export function LogTab({ onSaved }: Props) {
         messages: null,
         sold: false,
         sold_when: null,
+        vinted_url: isVintedUrl(url) ? url.trim() : null,
+        image_url: imageUrl,
         ...notesDbValue(notes),
       });
       setState("saved");
@@ -95,6 +101,7 @@ export function LogTab({ onSaved }: Props) {
       setDate(todayStr());
       setTime(nowStr());
       setNotes("");
+      setImageUrl(null);
       setTimeout(() => {
         setState("idle");
         onSaved();

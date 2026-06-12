@@ -22,6 +22,7 @@ export type Database = {
           date: string
           favourites: string | null
           id: string
+          image_url: string | null
           item: string
           messages: string | null
           notes: string | null
@@ -31,6 +32,7 @@ export type Database = {
           time: string
           type: string
           views: string | null
+          vinted_url: string | null
         }
         Insert: {
           category: string
@@ -39,6 +41,7 @@ export type Database = {
           date: string
           favourites?: string | null
           id?: string
+          image_url?: string | null
           item: string
           messages?: string | null
           notes?: string | null
@@ -48,6 +51,7 @@ export type Database = {
           time: string
           type: string
           views?: string | null
+          vinted_url?: string | null
         }
         Update: {
           category?: string
@@ -56,6 +60,7 @@ export type Database = {
           date?: string
           favourites?: string | null
           id?: string
+          image_url?: string | null
           item?: string
           messages?: string | null
           notes?: string | null
@@ -65,6 +70,7 @@ export type Database = {
           time?: string
           type?: string
           views?: string | null
+          vinted_url?: string | null
         }
         Relationships: []
       }

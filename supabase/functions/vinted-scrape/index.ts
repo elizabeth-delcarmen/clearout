@@ -62,6 +62,11 @@ function parsePriceFromHtml(html: string, itemId?: string): string | null {
   return null;
 }
 
+function parseImageFromHtml(html: string): string | null {
+  const match = html.match(/<meta property="og:image" content="([^"]+)"/);
+  return match ? match[1] : null;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
@@ -115,8 +120,9 @@ serve(async (req) => {
 
     const item = titleMatch[1].replace(/\s*\|\s*Vinted.*$/, "").trim();
     const condition = parseConditionFromHtml(html);
+    const image_url = parseImageFromHtml(html);
 
-    return new Response(JSON.stringify({ item, price, condition }), {
+    return new Response(JSON.stringify({ item, price, condition, image_url }), {
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });
   } catch (err) {

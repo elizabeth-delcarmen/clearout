@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useListings, notesDbValue, type Listing } from "@/hooks/useListings";
 import { formatListingDate } from "@/lib/formatDate";
 import { isReadyFor24hNudge } from "@/lib/listings";
+import { uploadListingImage } from "@/lib/listingImages";
 import { CATEGORIES, CONDITIONS } from "@/lib/listingOptions";
 import { AutoGrowTextarea } from "./AutoGrowTextarea";
 
@@ -30,7 +31,9 @@ export function EntryCard({ listing }: Props) {
         onClick={() => setExpanded((v) => !v)}
         className="w-full text-left p-4 flex items-start justify-between gap-3"
       >
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 flex items-start gap-3">
+          <ListingThumbnail imageUrl={listing.image_url ?? null} />
+          <div className="min-w-0 flex-1">
           <div className="text-[15px] font-bold truncate">{listing.item}</div>
           <div className="text-sm text-muted-foreground font-sans-ui mt-0.5">
             {formatListingDate(listing.date)} · {listing.time} ·{" "}
@@ -47,6 +50,7 @@ export function EntryCard({ listing }: Props) {
                 {listing.condition}
               </span>
             )}
+          </div>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
@@ -91,6 +95,26 @@ export function EntryCard({ listing }: Props) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function ListingThumbnail({ imageUrl }: { imageUrl: string | null }) {
+  if (imageUrl) {
+    return (
+      <img
+        src={imageUrl}
+        alt=""
+        className="w-12 h-12 rounded-lg object-cover shrink-0 bg-muted"
+      />
+    );
+  }
+  return (
+    <div
+      className="w-12 h-12 rounded-lg shrink-0 bg-muted flex items-center justify-center text-lg"
+      aria-hidden
+    >
+      👕
     </div>
   );
 }
@@ -303,10 +327,76 @@ function EditForm({
   const [sold, setSold] = useState(listing.sold);
   const [soldWhen, setSoldWhen] = useState(listing.sold_when ?? "");
   const [notes, setNotes] = useState(listing.notes ?? "");
+  const [imageUrl, setImageUrl] = useState(listing.image_url ?? null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [blobPreview, setBlobPreview] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!pendingFile) {
+      setBlobPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(pendingFile);
+    setBlobPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [pendingFile]);
+
+  const previewUrl = blobPreview ?? imageUrl;
 
   return (
     <div className="mt-3 rounded-[10px] bg-primary/5 p-3 space-y-3">
       <div className="text-sm font-bold text-primary font-sans-ui">✏️ Edit entry</div>
+      <div>
+        <label className={labelCls}>Photo</label>
+        <div className="flex items-center gap-3">
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt=""
+              className="w-12 h-12 rounded-lg object-cover shrink-0 bg-muted"
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-lg shrink-0 bg-muted flex items-center justify-center text-lg">
+              👕
+            </div>
+          )}
+          <div className="flex flex-col gap-1.5 min-w-0">
+            <label className="text-sm text-primary font-sans-ui cursor-pointer">
+              {previewUrl ? "Change photo" : "Upload photo"}
+              <input
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setPendingFile(file);
+                    setUploadError(null);
+                  }
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            {previewUrl && (
+              <button
+                type="button"
+                onClick={() => {
+                  setPendingFile(null);
+                  setImageUrl(null);
+                }}
+                className="text-sm text-destructive font-sans-ui text-left"
+              >
+                Remove photo
+              </button>
+            )}
+          </div>
+        </div>
+        {uploadError && (
+          <p className="mt-1.5 text-xs text-destructive font-sans-ui">{uploadError}</p>
+        )}
+      </div>
       <div>
         <label className={labelCls}>Item name</label>
         <input className={inputCls} value={item} onChange={(e) => setItem(e.target.value)} />
@@ -396,26 +486,42 @@ function EditForm({
       )}
       <div className="flex gap-2">
         <button
-          onClick={() =>
-            onSave({
-              item,
-              price: parseFloat(price) || 0,
-              type,
-              category,
-              condition,
-              date,
-              time,
-              views: views || null,
-              favourites: favs || null,
-              messages: msgs || null,
-              sold,
-              sold_when: sold ? soldWhen : null,
-              ...notesDbValue(notes, listing.notes),
-            })
-          }
-          className="flex-1 rounded-[10px] bg-primary text-primary-foreground py-2.5 font-bold font-sans-ui"
+          disabled={saving}
+          onClick={async () => {
+            setSaving(true);
+            setUploadError(null);
+            try {
+              let nextImageUrl = imageUrl;
+              if (pendingFile) {
+                nextImageUrl = await uploadListingImage(listing.id, pendingFile);
+              }
+              await onSave({
+                item,
+                price: parseFloat(price) || 0,
+                type,
+                category,
+                condition,
+                date,
+                time,
+                views: views || null,
+                favourites: favs || null,
+                messages: msgs || null,
+                sold,
+                sold_when: sold ? soldWhen : null,
+                image_url: nextImageUrl,
+                ...notesDbValue(notes, listing.notes),
+              });
+            } catch (err) {
+              setUploadError(
+                err instanceof Error ? err.message : "Could not save changes. Please try again.",
+              );
+            } finally {
+              setSaving(false);
+            }
+          }}
+          className="flex-1 rounded-[10px] bg-primary text-primary-foreground py-2.5 font-bold font-sans-ui disabled:opacity-60"
         >
-          Save changes
+          {saving ? "Saving…" : "Save changes"}
         </button>
         <button
           onClick={onCancel}
