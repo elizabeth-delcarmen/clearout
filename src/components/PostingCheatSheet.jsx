@@ -19,26 +19,26 @@ const PRIMARY = "hsl(var(--primary))";
 const BRAND = "hsl(var(--brand))";
 
 const days = [
-  { day: "Mon", score: 1 },
-  { day: "Tue", score: 5 },
-  { day: "Wed", score: 4 },
+  { day: "Mon", score: 2 },
+  { day: "Tue", score: 3 },
+  { day: "Wed", score: 2 },
   { day: "Thu", score: 5 },
-  { day: "Fri", score: 3 },
-  { day: "Sat", score: 1 },
+  { day: "Fri", score: 4 },
+  { day: "Sat", score: 3 },
   { day: "Sun", score: 2 },
 ];
 
 const rules = {
   good: [
-    "Tue–Thu evening 18:00–21:00",
-    "Week 1 of the month (1st–7th)",
-    "Friday 20:00–22:00 as backup",
+    "Thu–Fri evening 18:00–21:00",
+    "Week 4 of the month (22nd–31st)",
+    "Week 1 also strong (1st–7th)",
     "Account quiet for 48h+",
   ],
   avoid: [
-    "Monday — weakest day",
+    "Wed & Mon — weakest days",
     "Saturday daytime",
-    "Week 3 (15th–21st)",
+    "Week 2 (8th–14th) — quietest",
     "After relisting or price drops",
   ],
 };
@@ -146,7 +146,7 @@ export default function PostingCheatSheet() {
             }}>
               <div>
                 <div style={{ fontSize: 18, fontWeight: 700, color: "#1a1a1a" }}>Posting Cheat Sheet</div>
-                <div style={{ fontSize: 15, color: "#666", marginTop: 2 }}>From 162 sales · Aug 2025 – Jun 2026</div>
+                <div style={{ fontSize: 15, color: "#666", marginTop: 2 }}>From 179 sales · Aug 2025 – Jun 2026</div>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -176,7 +176,7 @@ export default function PostingCheatSheet() {
                 <span style={{ fontSize: 20 }}>⚡</span>
                 <div>
                   <div style={{ fontSize: 14, color: "#666", textTransform: "uppercase", letterSpacing: "0.08em" }}>Sweet spot</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>Tue–Thu · 18:00–21:00 · Week 1</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>Thu–Fri · 18:00–21:00 · Week 4</div>
                 </div>
               </div>
 

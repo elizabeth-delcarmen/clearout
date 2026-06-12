@@ -7,12 +7,12 @@ const BRAND = "hsl(var(--brand))";
 const BG = "#F7F5F2";
 
 const days = [
-  { day: "Mon", score: 1, label: "Avoid" },
-  { day: "Tue", score: 5, label: "Great" },
-  { day: "Wed", score: 4, label: "Good" },
+  { day: "Mon", score: 2, label: "Quiet" },
+  { day: "Tue", score: 3, label: "OK" },
+  { day: "Wed", score: 2, label: "Avoid" },
   { day: "Thu", score: 5, label: "Best" },
-  { day: "Fri", score: 3, label: "OK" },
-  { day: "Sat", score: 1, label: "Avoid" },
+  { day: "Fri", score: 4, label: "Great" },
+  { day: "Sat", score: 3, label: "OK" },
   { day: "Sun", score: 2, label: "Quiet" },
 ];
 
@@ -24,18 +24,18 @@ const times = [
 ];
 
 const weeks = [
-  { label: "Week 1", dates: "1–7", score: 5, note: "Payday 💰" },
-  { label: "Week 2", dates: "8–14", score: 3, note: "" },
-  { label: "Week 3", dates: "15–21", score: 2, note: "Lull" },
-  { label: "Week 4", dates: "22+", score: 4, note: "Bounce back" },
+  { label: "Week 1", dates: "1–7", score: 4, note: "Strong 💰" },
+  { label: "Week 2", dates: "8–14", score: 2, note: "Quietest" },
+  { label: "Week 3", dates: "15–21", score: 3, note: "" },
+  { label: "Week 4", dates: "22+", score: 5, note: "Strongest 🏆" },
 ];
 
 const categories = [
   { name: "Bags", emoji: "👜", count: 45 },
-  { name: "Books", emoji: "📚", count: 38 },
   { name: "Clothing", emoji: "👗", count: 28 },
-  { name: "Shoes", emoji: "👟", count: 18 },
-  { name: "Accessories", emoji: "🏠", count: 15 },
+  { name: "Books", emoji: "📚", count: 32 },
+  { name: "Home & Tech", emoji: "🔌", count: 21 },
+  { name: "Stationery", emoji: "✏️", count: 16 },
 ];
 
 const dayColor = (score) => {
@@ -63,7 +63,7 @@ export default function BaselineInsights() {
       }}>
         <div>
           <div style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a" }}>Baseline Insights</div>
-          <div style={{ fontSize: 15, color: "#666", marginTop: 2 }}>From Gmail · 162 sales · Aug 2025 – Jun 2026</div>
+          <div style={{ fontSize: 15, color: "#666", marginTop: 2 }}>From GDPR export · 179 sales · Aug 2025 – Jun 2026</div>
         </div>
         <div style={{
           background: `${BRAND}15`,
@@ -92,7 +92,7 @@ export default function BaselineInsights() {
         <span style={{ fontSize: 20 }}>⚡</span>
         <div>
           <div style={{ fontSize: 14, color: "#666", textTransform: "uppercase", letterSpacing: "0.08em" }}>Sweet spot</div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>Tue–Thu · 18:00–21:00 · Week 1</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>Thu–Fri · 18:00–21:00 · Week 4</div>
         </div>
       </div>
 
